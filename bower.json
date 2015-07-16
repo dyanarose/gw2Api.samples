@@ -1,0 +1,32 @@
+{
+  "name": "gw2Api.js.samples",
+  "version": "0.0.0",
+  "authors": [
+    "Dyana Rose <dyanarose@gmail.com>"
+  ],
+  "description": "set of usage samples for gw2Api.js",
+  "main": "index.html",
+  "dependencies": {
+    "dlr.gw2Api": "~0",
+    "react": "~0.13.3",
+    "bootstrap": "~3.3.5"
+  },
+  "overrides": {
+    "bootstrap": {
+      "main": [
+        "dist/css/bootstrap.css"
+      ],
+      "dependencies": {
+      }
+    }
+  },
+  "license": "MIT",
+  "homepage": "www.github.com/dyanarose",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
