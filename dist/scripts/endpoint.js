@@ -10,13 +10,20 @@
   });
   var SourceParameter = React.createClass({displayName: "SourceParameter",
     render: function(){
-      var val = this.props.value;
-      if((val || val ===0) && Array.isArray(val)){
-        val = '[' + val.toString() + ']';
+      var rawVal = this.props.value, val = '', index;
+      if(Array.isArray(rawVal)){
+        for(index = 0; index < rawVal.length; index ++){
+          if(rawVal[index] || rawVal[index] === 0){
+            val += formatValForParameter(rawVal[index]) + ',';
+          }
+        }
+        val = '[' + val.replace(/^[,]+|[,]+$/g, '') + ']';
+      } else {
+        val = formatValForParameter(rawVal);
       }
       return(
         React.createElement("span", null, 
-          'params.', this.props.name,  ' = ', val || 'null', ';\n'
+          'params.', this.props.name,  ' = ', val, ';\n'
         ));
     }
   });
@@ -27,7 +34,7 @@
       for(prop in this.props.parameters){
         if(prop === 'type'){continue;}
         if(this.props.parameters.hasOwnProperty(prop)){
-          if(typeof this.props.parameters[prop] === 'function' || !this.props.parameters[prop]){
+          if(typeof this.props.parameters[prop] === 'function' || !(this.props.parameters[prop] || this.props.parameters[prop] === 0)){
             continue;
           }
           parameters.push(React.createElement(SourceParameter, {value: this.props.parameters[prop], name: prop}));
@@ -89,7 +96,7 @@
     handleChange: function(){
       var valArray,
         val = this.refs[this.props.name].getDOMNode().value;
-      if(val){
+      if(val || val === 0){
         var rtrim = /^[\[]+|[\]]+$/g;
         val = val.replace(rtrim, '');
         valArray = val.split(',');
@@ -109,7 +116,6 @@
   });
   var ParameterInput = React.createClass({displayName: "ParameterInput",
     handleUserInput: function(prop, val){
-      console.log(prop + ': ' + val);
       this.props.onUserInput(prop, val);
     },
     render: function(){
@@ -306,7 +312,16 @@
   endpoints.unshift('');
 
   React.render(React.createElement(EndpointContainer, {endpoints: endpoints}), document.getElementById('dlr-samples'));
-
+  function formatValForParameter(value){
+    if(!(value || value === 0)){
+      return 'null';
+    }
+    if (typeof value === 'number')
+    {
+      return value;
+    }
+    return "'" + value + "'";
+  }
   function getPropertyFromName(name, eps){
     var nameArray, index, leaf, lastNodeIndex, node, part;
     nameArray = name.split('.');
